@@ -1,16 +1,18 @@
 const canvas = document.getElementById("canvas");
 const ctx = canvas.getContext("2d");
+
 const startBtn = document.getElementById("startBtn");
+const shuffleBtn = document.getElementById("shuffleBtn");
 
 const img = new Image();
 img.src = "cat.jpg";
 
-const numBars = 20;
+const numBars = 16;
 const barWidth = canvas.width / numBars;
-const maxBarHeight = 300;
 
 let bars = [];
 let sorting = false;
+let delay = 180;
 
 img.onload = () => {
   createBars();
@@ -20,7 +22,6 @@ img.onload = () => {
 function createBars() {
   bars = [];
 
-  // Create bars in correct order first
   for (let i = 0; i < numBars; i++) {
     bars.push({
       value: i + 1,
@@ -28,7 +29,6 @@ function createBars() {
     });
   }
 
-  // Shuffle them
   shuffle(bars);
 }
 
@@ -42,25 +42,32 @@ function shuffle(array) {
 function drawBars(highlight = []) {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
+  const sliceWidth = img.width / numBars;
+
   for (let i = 0; i < bars.length; i++) {
     const bar = bars[i];
     const x = i * barWidth;
-    const height = (bar.value / numBars) * maxBarHeight;
-    const y = canvas.height - height;
+    const y = 0;
+    const width = barWidth;
+    const height = canvas.height;
 
-    // Draw image slice inside bar
-    const sliceWidth = img.width / numBars;
     const sourceX = bar.imgIndex * sliceWidth;
 
     ctx.drawImage(
       img,
-      sourceX, 0, sliceWidth, img.height,   
-      x, y, barWidth, height              
+      sourceX,
+      0,
+      sliceWidth,
+      img.height,
+      x,
+      y,
+      width,
+      height
     );
 
-    // Rectangle border
-    ctx.strokeStyle = highlight.includes(i) ? "red" : "black";
-    ctx.strokeRect(x, y, barWidth, height);
+    ctx.strokeStyle = highlight.includes(i) ? "#27f0b4" : "#000000";
+    ctx.lineWidth = highlight.includes(i) ? 4 : 2;
+    ctx.strokeRect(x, y, width, height);
   }
 }
 
@@ -96,7 +103,7 @@ async function merge(arr, left, mid, right) {
     }
 
     drawBars([k]);
-    await sleep(150);
+    await sleep(delay);
     k++;
   }
 
@@ -104,7 +111,7 @@ async function merge(arr, left, mid, right) {
     arr[k] = leftPart[i];
     i++;
     drawBars([k]);
-    await sleep(150);
+    await sleep(delay);
     k++;
   }
 
@@ -112,17 +119,25 @@ async function merge(arr, left, mid, right) {
     arr[k] = rightPart[j];
     j++;
     drawBars([k]);
-    await sleep(150);
+    await sleep(delay);
     k++;
   }
+
+  drawBars();
+  await sleep(delay);
 }
 
 startBtn.addEventListener("click", async () => {
   if (sorting) return;
-  sorting = true;
 
+  sorting = true;
   await mergeSort(bars, 0, bars.length - 1);
   drawBars();
-
   sorting = false;
+});
+
+shuffleBtn.addEventListener("click", () => {
+  if (sorting) return;
+  createBars();
+  drawBars();
 });

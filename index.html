@@ -7,9 +7,24 @@
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <h1>Merge Sort Visualizer</h1>
-  <button id="startBtn">Start Sorting</button>
-  <canvas id="canvas" width="1000" height="500"></canvas>
+  <div class="container">
+    <h1>Merge Sort</h1>
+    <p class="subtitle">
+      Recursively splits and merges sorted subarrays to produce a fully sorted array.
+    </p>
+
+    <div class="info">
+      <span>Time: O(n log n)</span>
+      <span>Space: O(n)</span>
+    </div>
+
+    <div class="controls">
+      <button id="shuffleBtn">Shuffle</button>
+      <button id="startBtn">Start Sorting</button>
+    </div>
+
+    <canvas id="canvas" width="900" height="450"></canvas>
+  </div>
 
   <script src="script.js"></script>
 </body>
